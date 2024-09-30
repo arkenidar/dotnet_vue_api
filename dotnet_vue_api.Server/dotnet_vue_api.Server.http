@@ -1,0 +1,6 @@
+@dotnet_vue_api.Server_HostAddress = http://localhost:5153
+
+GET {{dotnet_vue_api.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
