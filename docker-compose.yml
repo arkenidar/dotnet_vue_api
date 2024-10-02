@@ -1,0 +1,32 @@
+# current file is : docker-compose.yml
+
+# docker-compose down && docker-compose up -d --build
+
+name: dotnet_vue_api
+
+services:
+  vue_api_mssql:
+    container_name: vue_api_mssql
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    environment:
+      MSSQL_SA_PASSWORD: "4Aw!7-pamom6OM" # Set the 'sa' user password (must adhere to security policies)
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1425:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql
+  vue_api:
+    container_name: vue_api
+    depends_on:
+      - vue_api_mssql
+    build:
+      context: "."  # directory
+      dockerfile: "./dotnet_vue_api.Server/Dockerfile"  # Specify the Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=vue_api_mssql,1425;Database=dotnet_vue_api;User Id=sa;Password=4Aw!7-pamom6OM;"
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_HOSTINGSTARTUPASSEMBLIES: "Microsoft.AspNetCore.SpaProxy"
+volumes:
+  sqlvolume:
